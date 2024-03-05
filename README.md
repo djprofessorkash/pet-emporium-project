@@ -1,4 +1,4 @@
-# Pet Emporium
+# Project Build Tutorial: _Pet Emporium_
 
 This is a tutorial project build intended for graduates of both the SE and DS tracks at Flatiron School.
 
