@@ -6,6 +6,14 @@ package-lock.json
 node_modules/
 */node_modules/
 
+# SERVER: Environment Variables
+.env
+*/.env
+
+# SERVER: Flask Environment Variables
+.flaskenv
+*/.flaskenv
+
 # SERVER: Version Config Files
 Pipfile.lock
 */Pipfile.lock
