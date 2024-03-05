@@ -1,3 +1,3 @@
-## Pet Emporium: _Research_
+## Pup Emporium: _Research_
 
-Research scripts and dependencies for the **Pet Emporium** project.
+Research scripts and dependencies for the **Pup Emporium** project.

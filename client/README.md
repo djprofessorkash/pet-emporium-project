@@ -1,3 +1,3 @@
-## Pet Emporium: _Client_
+## Pup Emporium: _Client_
 
-Client scripts and dependencies for the **Pet Emporium** project.
+Client scripts and dependencies for the **Pup Emporium** project.
