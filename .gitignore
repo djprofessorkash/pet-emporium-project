@@ -1,0 +1,23 @@
+# CLIENT: Version Config Files
+package-lock.json
+*/package-lock.json
+
+# CLIENT: Node.js Dependencies
+node_modules/
+*/node_modules/
+
+# SERVER: Version Config Files
+Pipfile.lock
+*/Pipfile.lock
+
+# SERVER: SQL Database Files
+*.db
+*/*.db
+
+# RESEARCH: Datasets
+data/
+*/data/
+
+# Miscellaneous Files
+.DS_Store
+*/.DS_Store
