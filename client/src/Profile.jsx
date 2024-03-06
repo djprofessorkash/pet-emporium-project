@@ -20,7 +20,7 @@ const Profile = ({currentUser}) => {
             <br />
             <h3>Your Dogs:</h3>
                 {
-                    userAssociatedDogs.map((adoptedDog) => <div><button>{adoptedDog.name} ({adoptedDog.breed})</button></div>)
+                    userAssociatedDogs.map((adoptedDog) => <div><button className={"dogContainerInProfile"} >{adoptedDog.name} ({adoptedDog.breed})</button></div>)
                 }
             <div className={"buttonContainer"}>
                 <input className={"inputButton"} type="button" onClick={() => navigate("/")} value="HOME" />
