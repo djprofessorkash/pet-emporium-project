@@ -2,9 +2,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import Home from "./Home";
 import Login from "./Login";
+import Profile from "./Profile";
+import Dashboard from "./Dashboard";
+import Adopt from "./Adopt";
 import "./App.css";
 
-function App() {
+const App = () => {
 	const [username, setUsername] = useState(null);
 	const [currentUser, setCurrentUser] = useState(null);
 	const [loggedIn, setLoggedIn] = useState(false);
@@ -80,9 +83,9 @@ function App() {
 			<Routes>
 			<Route path="/" element={<Home handleLogout={handleLogout} currentUser={currentUser} loggedIn={loggedIn} isAdministrator={isAdministrator} />} />
 			<Route path="/login" element={<Login handleLogin={handleLogin} loggedIn={loggedIn} setLoggedIn={setLoggedIn} username={username} setUsername={setUsername} />} />
-			<Route path="/profile" element={<div>This is the profile page.</div>} />
-			<Route path="/adopt" element={<div>This is the dog adoptions page.</div>} />
-			<Route path="/dashboard" element={<div>This is the admin dashboard page for dog data.</div>} />
+			<Route path="/profile" element={<Profile currentUser={currentUser}/>} />
+			<Route path="/adopt" element={<Adopt />} />
+			<Route path="/dashboard" element={<Dashboard />} />
 			</Routes>
 		</BrowserRouter>
 		</div>
