@@ -43,7 +43,7 @@ def api(current_user):
 
 
 # GET route to verify authentication.
-@app.route("/api/check_session")
+@app.route("/check_session")
 def verify_session():
     user = db.session.get(User, session.get("user_id"))
     if user is not None:
@@ -88,7 +88,7 @@ def view_dog_by_id(current_user, dog_id: int):
     matching_dog = Dog.query.filter(Dog.id == dog_id).first()
     if not matching_dog:
         return make_response({"error": f"Dog ID `{dog_id}` not found in database."}, 404)
-    return make_response(matching_dog.to_dict(only=("id", "name", "breed")), 200)
+    return make_response(matching_dog.to_dict(), 200)
 
 
 #######################################################
@@ -160,19 +160,22 @@ def remove_dog(current_user, dog_id: int):
 
 
 # GET route to view all adopted dogs for a current user.
-@app.post("/api/users/<int:user_id>/dogs")
+@app.route("/api/users/<int:user_id>/dogs")
 @authorization_required
-def view_adopted_dogs_for_user(user_id):
+def view_adopted_dogs_for_user(current_user, user_id):
+    print(user_id)
     matching_user = User.query.filter(User.id == user_id).first()
+    print(matching_user)
     if not matching_user:
         return make_response({"error": f"User ID `{user_id}` not found in database."}, 404)
     adopted_dogs_for_user = [dog.to_dict(rules=("-adoptions",)) for dog in matching_user.dogs]
     return make_response(adopted_dogs_for_user, 200)
 
 # POST route to add a dog to a user's currently adopted dogs (list).
-@app.post("/api/users/<int:user_id>/adoptions")
-@authorization_required
-def adopt_dog_to_user(user_id):
+# NOTE: Requires administrative privileges. (Can use decorator middleware.)
+@app.route("/api/users/<int:user_id>/adoptions", methods=["POST"])
+@authorization_required(methods=["POST"])
+def adopt_dog_to_user(current_user, user_id):
     # STEP 1: Find the user that matches the given ID from the URL/route.
     matching_user = User.query.filter(User.id == user_id).first()
 
@@ -187,15 +190,23 @@ def adopt_dog_to_user(user_id):
     if not matching_dog:
         return make_response({"error": f"Dog ID `{dog_id}` not found in database."}, 404)
     
-    # STEP 3: Link our matching user and dog using an association table: `<Adoption>`. 
+    # STEP 3: Check that matching dog is adoptable and raise an error if not true.
+    if matching_dog.is_eligible_for_adoption() is False:
+        return make_response({"error": f"This dog (ID: `{dog_id}`) is currently not eligible for adoption. Please check back again later."}, 400) 
+    
+    # STEP 4: Link our matching user and dog using an association table: `<Adoption>`. 
     new_adoption = Adoption(user_id=matching_user.id,
                             dog_id=matching_dog.id)
     
-    # STEP 4: Stage and commit changes to the database.
+    # STEP 5: Update dog's adoptability status.
+    setattr(matching_dog, "is_adoptable", False)
+    
+    # STEP 6: Stage and commit changes to the database.
     db.session.add(new_adoption)
+    db.session.add(matching_dog)
     db.session.commit()
 
-    # STEP 5: Return acceptable value to frontend/API.
+    # STEP 7: Return acceptable value to frontend/API.
     # NOTE: Must give additional serialization rules to stop infinite cascading/recursion
     #       after accessing a user's adopted dogs. 
     return make_response(new_adoption.to_dict(rules=("-user",)), 201)
@@ -250,11 +261,9 @@ def user_login():
     if request.method == "POST":
         # Retrieve POST request as JSONified payload.
         payload = request.get_json()
-        print(payload)
 
         # Filter database by username to find matching user to potentially login.
         matching_user = User.query.filter(User.username.like(f"%{payload['username']}%")).first()
-        print(matching_user)
 
         # Check submitted password against hashed password in database for authentication.
         if matching_user is not None:
