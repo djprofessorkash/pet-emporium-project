@@ -49,7 +49,7 @@ const Home = ({handleLogout, currentUser, loggedIn, isAdministrator}) => {
                 <div>
                     {loggedIn ? <input className={"inputButton"} type="button" onClick={handleUserProfileButton} value="PROFILE" /> : null}
                     {loggedIn ? <input className={"inputButton"} type="button" onClick={handleAdoptablePetsButton} value="ADOPT A PET" /> : null}
-                    {isAdministrator ? <input className={"inputButton"} type="button" onClick={handlePetDashboardButton} value="PET DASHBOARD" /> : null}
+                    {isAdministrator ? <input className={"inputButton"} type="button" onClick={handlePetDashboardButton} value="ADMIN DASHBOARD" /> : null}
                 </div>
             </div>
             <div className={"buttonContainer"}>
