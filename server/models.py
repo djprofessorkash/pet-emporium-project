@@ -80,6 +80,9 @@ class Dog(db.Model, SerializerMixin):
     is_adoptable = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
+    def is_eligible_for_adoption(self):
+        return self.is_adoptable
+
     # 1a.   Create a relationship that links a dog row to an adoption row.
     # NOTE: This relationship sets up the connection from a dog to an adoption, 
     #       and must be closed from an adoption back to a dog. 
