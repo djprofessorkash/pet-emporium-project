@@ -54,6 +54,15 @@
 	justify-content: center;
 }
 
+.mainBanner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid black;
+	border-radius: 8px;
+	margin-top: 40px;
+}
+
 .resultContainer,
 .historyItem {
 	flex-direction: row;
@@ -99,4 +108,46 @@
 	border-radius: 8px;
 	border: 1px solid grey;
 	padding-left: 8px;
+}
+
+.dogContainerInProfile {
+	border: none;
+	background: darkblue;
+	color: white;
+	padding: 12px 24px;
+	margin: 8px;
+	font-size: 24px;
+	border-radius: 8px;
+}
+
+.deleteOnClick {
+	border: none;
+	background: lightcoral;
+	color: white;
+	padding: 12px 24px;
+	margin: 8px;
+	font-size: 24px;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.editOnClick {
+	border: none;
+	background: gray;
+	color: white;
+	padding: 12px 24px;
+	margin: 8px;
+	font-size: 24px;
+	border-radius: 8px;
+	/* cursor: pointer; */
+}
+
+.processAdoptionOnClick {
+	border: none;
+	background: green;
+	color: white;
+	padding: 12px 24px;
+	margin: 8px;
+	font-size: 24px;
+	border-radius: 8px;
 }
