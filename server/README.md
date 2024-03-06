@@ -1,3 +1,3 @@
-## Pet Emporium: _Server_
+## Pup Emporium: _Server_
 
-Server scripts and dependencies for the **Pet Emporium** project.
+Server scripts and dependencies for the **Pup Emporium** project.
