@@ -36,7 +36,7 @@ const Home = ({handleLogout, currentUser, loggedIn, isAdministrator}) => {
                 return `Hello, @${currentUser.username}!`;
             }
         } else {
-            return "Welcome!";
+            return "Welcome to the Pup Emporium!";
         }
     }
 
@@ -44,6 +44,9 @@ const Home = ({handleLogout, currentUser, loggedIn, isAdministrator}) => {
         <div className="mainContainer">
             <div className={"titleContainer"}>
                 {renderUsername()} 
+            </div>
+            <div className={"mainBannerContainer"}>
+                <img className={"mainBanner"} src="https://happydogsnyc.com/wp-content/uploads/2020/09/IMG_5973.png" alt="Happy dogs." />
             </div>
             <div className={"buttonContainer"}>
                 <div>
@@ -57,7 +60,7 @@ const Home = ({handleLogout, currentUser, loggedIn, isAdministrator}) => {
                 className={"inputButton"}
                 type="button"
                 onClick={handleUserAuthToggleButton}
-                value={loggedIn ? "LOG OUT" : "LOG IN"}
+                value={loggedIn ? "LOG OUT" : "SIGN IN"}
                 />
             </div>
         </div>
