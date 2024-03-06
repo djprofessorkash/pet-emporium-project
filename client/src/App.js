@@ -11,7 +11,7 @@ function App() {
 	const [isAdministrator, setIsAdministrator] = useState(false);
 
 	useEffect(() => {
-		fetch("/api/check_session")
+		fetch("/check_session")
 		.then((response) => {
 			if (response.ok) {
 				response.json().then(
