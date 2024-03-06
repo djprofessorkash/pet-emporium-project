@@ -113,7 +113,7 @@ def add_dog(current_user):
     # Add and commit new dog to database.
     db.session.add(new_dog)
     db.session.commit()
-    return make_response(new_dog.to_dict(only=("id", "name", "breed")), 201)
+    return make_response(new_dog.to_dict(), 201)
 
 # PATCH route to edit dog's information in database.
 # NOTE: Requires administrative privileges. (Can use decorator middleware.)
@@ -162,12 +162,10 @@ def remove_dog(current_user, dog_id: int):
 @app.route("/api/users/<int:user_id>/dogs")
 @authorization_required
 def view_adopted_dogs_for_user(current_user, user_id):
-    print(user_id)
     matching_user = User.query.filter(User.id == user_id).first()
-    print(matching_user)
     if not matching_user:
         return make_response({"error": f"User ID `{user_id}` not found in database."}, 404)
-    adopted_dogs_for_user = [dog.to_dict(rules=("-adoptions",)) for dog in matching_user.dogs]
+    adopted_dogs_for_user = [dog.to_dict(rules=("-adoptions",)) for dog in matching_user.dogs if dog is not None]
     return make_response(adopted_dogs_for_user, 200)
 
 # POST route to add a dog to a user's currently adopted dogs (list).
