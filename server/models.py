@@ -69,16 +69,29 @@ There are three major steps to giving life to our association table.
 #   -> `db.Model` for SQL-like database structuring.
 #   -> `SerializerMixin` for data serialization and avoiding infinite referencing.
 class Dog(db.Model, SerializerMixin):
-    # 0a. Set up name of SQL database table containing dog data.
+    # 0a.   Set up name of SQL database table containing dog data.
     __tablename__ = "dog_table"
 
-    # 0a. Set up physical object columns prior to interdependent association(s).
+    # 0a.   Set up physical object columns prior to interdependent association(s).
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     breed = db.Column(db.String, nullable=False)
     # photo = db.Column(db.String, nullable=False)
     is_adoptable = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    # 1a.   Create a relationship that links a dog row to an adoption row.
+    # NOTE: This relationship sets up the connection from a dog to an adoption, 
+    #       and must be closed from an adoption back to a dog. 
+    adoptions = db.relationship("Adoption", back_populates="dog")
+
+    # 2a.   Create an association proxy from the dog-adoption relationship 
+    #       to the user-adoption relationship.
+    users = association_proxy("adoptions", "user")
+
+    # 3a.   Create serialization rules to avoid infinite cascading/recursion
+    #       when accessing dog data from an adoption.
+    serialize_rules = ("-adoptions.dog",)
 
 
 # Database object model definition for user(s).
@@ -87,10 +100,10 @@ class Dog(db.Model, SerializerMixin):
 #   -> `SerializerMixin` for data serialization and avoiding infinite referencing.
 # NOTE: `User.password` must be cryptographically hashed prior to database storage.
 class User(db.Model, SerializerMixin):
-    # 0b. Set up name of SQL database table containing user data.
+    # 0b.   Set up name of SQL database table containing user data.
     __tablename__ = "user_table"
 
-    # 0b. Set up physical object columns prior to interdependent association(s).
+    # 0b.   Set up physical object columns prior to interdependent association(s).
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
@@ -100,17 +113,46 @@ class User(db.Model, SerializerMixin):
     def is_administrator(self):
         return self.is_admin
     
+    # 1c.   Create a relationship that links a user row to an adoption row.
+    # NOTE: This relationship sets up the connection from a user to an adoption, 
+    #       and must be closed from an adoption back to a user.
+    adoptions = db.relationship("Adoption", back_populates="user")
+
+    # 2b.   Create an association proxy from the user-adoption relationship
+    #       to the dog-adoption relationship.
+    dogs = association_proxy("adoptions", "dog")
+
+    # 3b.   Create serialization rules to avoid infinite cascading/recursion 
+    #       when accessing user data from an adoption.
+    serialize_rules = ("-adoptions.user",)
+    
 
 # Database association model definition for connecting a dog and a user.
 # NOTE: This needs to be subclassed with two superclasses.
 #   -> `db.Model` for SQL-like database structuring.
 #   -> `SerializerMixin` for data serialization and avoiding infinite referencing.
 class Adoption(db.Model, SerializerMixin):
-    # 0c. Set up name of SQL database table containing adoption data.
+    # 0c.   Set up name of SQL database table containing adoption data.
     __tablename__ = "adoption_table"
 
-    # 0c. Set up association object columns prior to dependent association(s).
+    # 0c.   Set up association object columns prior to dependent association(s).
     id = db.Column(db.Integer, primary_key=True)
     dog_id = db.Column(db.Integer, db.ForeignKey("dog_table.id"))
     user_id = db.Column(db.Integer, db.ForeignKey("user_table.id"))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    # 1b.   Extend the relationship from (1a) to link from an adoption row back to a dog row.
+    # NOTE: This relationship is the secondary piece that closes the loop from a dog to an adoption
+    #       by connecting an adoption back to a dog.
+    dog = db.relationship("Dog", back_populates="adoptions")
+
+    # 1d.   Extend the relationship from (1c) to link from an adoption row back to a user row.
+    # NOTE: This relationship is the secondary piece that closes the loop from a user to an adoption
+    #       by connecting an adoption back to a user.
+    user = db.relationship("User", back_populates="adoptions")
+
+    # 3c.   Create serialization rules to avoid infinite cascading/recursion
+    #       when accessing adoption data from a dog.
+    # 3d.   Create serialization rules to avoid infinite cascading/recursion 
+    #       when accessing adoption data from a user.
+    serialize_rules = ("-dog.adoptions", "-user.adoptions")
