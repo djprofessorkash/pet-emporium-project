@@ -63,8 +63,7 @@ def verify_session():
 @authorization_required
 def view_all_dogs(current_user):
     # Query all dog rows from database.
-    all_dogs = [dog.to_dict(rules=("-adoptions",), 
-                            only=("id", "name", "breed")) for dog in Dog.query.all()]
+    all_dogs = [dog.to_dict(rules=("-adoptions",)) for dog in Dog.query.all()]
     return make_response(all_dogs, 200)
 
 # GET route to view all adoptable dogs.
