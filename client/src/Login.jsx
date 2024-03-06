@@ -52,6 +52,7 @@ const Login = ({handleLogin, loggedIn, setLoggedIn, username, setUsername}) => {
             <br />
             <div className={"inputContainer"}>
                 <input className={"inputButton"} type="button" onClick={handleButtonClick} value={"LOGIN"} />
+                <input className={"inputButton"} type="button" onClick={() => navigate("/")} value="HOME" />
             </div>
             </div>
     )
